@@ -49,7 +49,8 @@ def display_menu_options(wb):
     menu = {}
     menu['1'] = "Display monthly statement"
     menu['2'] = "Display yearly statement"
-   
+    menu['3'] = "Get expense by category"
+
     while True:
         options = menu.keys()
         options.sort()
