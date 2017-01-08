@@ -3,9 +3,6 @@ import openpyxl
 MAX_ROW = 200
 MAX_COLUMN = 5
 
-
-
-
 def get_total_income_per_month(sheet):
     MAX_ROW = sheet.max_row
     MAX_COLUMN = sheet.max_column
@@ -15,7 +12,7 @@ def get_total_income_per_month(sheet):
         if(sheet.cell(row = i, column = 4).value is not None and sheet.cell(row = i, column = 2).value is not None):
             value = sheet.cell(row = i, column = 4).value
             total = total + float(value)
-    print "The total income for month " + sheet.title + " is " + str(total)
+
     return total
 
 def  get_total_expense_per_month(sheet):
@@ -27,10 +24,21 @@ def  get_total_expense_per_month(sheet):
         if(sheet.cell(row = i, column = 5).value is not None and sheet.cell(row = i, column = 2).value is not None):
             value = sheet.cell(row = i, column = 5).value
             total = total + float(value)
-    print "The total expenses for month " + sheet.title + " is " + str(total)
     return total
 
+def get_totals_for_year(wb, year):
+    total_income = 0
+    total_expense = 0
+
+    for sheet in wb.worksheets:
+        if(year in sheet.title):
+            total_income = total_income + get_total_income_per_month(sheet)
+            total_expense = total_expense + get_total_expense_per_month(sheet)
+    balance(total_income, total_expense)
+
 def balance(income, expense):
+    print "The total income is " + str(income)
+    print "The total expense is " + str(expense)
     print "Remaining balance is " + str(income - expense)
 
 def load_excel_workbook():
@@ -40,11 +48,8 @@ def load_excel_workbook():
 def display_menu_options(wb):
     menu = {}
     menu['1'] = "Display monthly statement"
-    menu['3'] = "Find total expenses for a year"
-    menu['4'] = "Find total income for a year"
-    menu['5'] = "Find average expense for a year"
-    menu['6'] = "Find average income for a year"
-    
+    menu['2'] = "Display yearly statement"
+   
     while True:
         options = menu.keys()
         options.sort()
@@ -58,14 +63,17 @@ def display_menu_options(wb):
             income_total = get_total_income_per_month(sheet)
             expense_total = get_total_expense_per_month(sheet)
             balance(income_total, expense_total)
+        
+        elif(selection == '2'):
+            year = raw_input("Please enter year : ")
+            get_totals_for_year(wb, year)
+                    
         else:
             print "Unknown option selected"
 
 def run():
     wb = load_excel_workbook()
     sheet = wb.get_sheet_by_name('October 2016')
-#    get_total_expense_per_month(sheet)
-#    get_total_income_per_month(sheet)
     display_menu_options(wb)
 
 if __name__ == '__main__':
